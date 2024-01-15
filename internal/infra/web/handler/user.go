@@ -2,6 +2,7 @@ package handler
 
 import (
 	"clean-project-exp/internal/usecase"
+	"clean-project-exp/pkg/presenter"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -57,7 +58,14 @@ func (h *UserWebHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *UserWebHandler) list(w http.ResponseWriter, _ *http.Request) {
+func (h *UserWebHandler) list(w http.ResponseWriter, r *http.Request) {
+	pres, err := presenter.NewPresenter(r.Header.Get("Accept"))
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	output, err := h.ListUsersUseCase.Execute()
 
 	if err != nil {
@@ -69,7 +77,9 @@ func (h *UserWebHandler) list(w http.ResponseWriter, _ *http.Request) {
 		output.Users = make([]usecase.UserForListingDTO, 0)
 	}
 
-	if err := json.NewEncoder(w).Encode(output); err != nil {
+	pres.SetPayload(output)
+
+	if err := pres.FormatResponse(w); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

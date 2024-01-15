@@ -16,11 +16,11 @@ type CreateUserOutputDTO struct {
 }
 
 type UserForListingDTO struct {
-	PubId     uuid.UUID `json:"pub_id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
+	PubId     uuid.UUID `json:"pub_id" xml:"pub_id"`
+	Name      string    `json:"name" xml:"name"`
+	CreatedAt time.Time `json:"created_at" xml:"created_at"`
 }
 
 type ListUsersOutputDTO struct {
-	Users []UserForListingDTO `json:"users"`
+	Users []UserForListingDTO `json:"users" xml:"users"`
 }
